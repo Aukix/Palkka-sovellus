@@ -167,3 +167,114 @@ export function exportToJSON(entries) {
   link.click();
   document.body.removeChild(link);
 }
+
+/* ------------------------------------------------------------------------
+ * Varmuuskopio: kaikki sovelluksen tiedot (tunnit, yritykset, asetukset)
+ * ---------------------------------------------------------------------- */
+
+const STORAGE_PREFIX = 'tyotunnit_';
+
+/** Kaikki sovelluksen localStorage-avaimet raakana tekstinä. */
+export function collectAllData() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(STORAGE_PREFIX)) data[key] = localStorage.getItem(key);
+  }
+  return data;
+}
+
+/** Lataa varmuuskopiotiedoston (sama muoto kuin päivityksen automaattiset varmuuskopiot). */
+export function downloadFullBackup(version) {
+  const payload = {
+    app: 'Tyotunnit',
+    createdAt: new Date().toISOString(),
+    version,
+    data: collectAllData(),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `tyotunnit_varmuuskopio_${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function parseJsonValue(value, fallback) {
+  if (value === undefined || value === null) return fallback;
+  if (typeof value !== 'string') return value;
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    return fallback;
+  }
+}
+
+/**
+ * Lukee varmuuskopiotiedoston. Tukee:
+ * - uutta muotoa { data: { tyotunnit_entries_v2: "...", ... } } (myös varmuuskopiot-kansion tiedostot)
+ * - vanhaa vientiä, jossa on pelkkä työvuorolista [ {...}, ... ]
+ */
+export function parseBackup(text) {
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (err) {
+    throw new Error('Tiedosto ei ole kelvollinen varmuuskopio (JSON).');
+  }
+
+  if (Array.isArray(parsed)) {
+    return { entries: parsed, companies: null, settings: null };
+  }
+  const data = parsed && typeof parsed === 'object' ? (parsed.data || parsed) : null;
+  if (!data || !(ENTRIES_KEY in data)) {
+    throw new Error('Tiedostosta ei löytynyt työvuoroja. Valitse Työtunnit-sovelluksen varmuuskopio.');
+  }
+  const entries = parseJsonValue(data[ENTRIES_KEY], []);
+  if (!Array.isArray(entries)) throw new Error('Varmuuskopion työvuorot ovat virheellisessä muodossa.');
+  const companies = parseJsonValue(data[COMPANIES_KEY], null);
+  const settings = parseJsonValue(data[SETTINGS_KEY], null);
+  return {
+    entries,
+    companies: Array.isArray(companies) ? companies : null,
+    settings: settings && typeof settings === 'object' ? settings : null,
+  };
+}
+
+/**
+ * Yhdistää varmuuskopion nykyisiin tietoihin poistamatta mitään:
+ * nykyiset vuorot säilyvät, varmuuskopiosta lisätään vain puuttuvat (id:n perusteella).
+ */
+export function mergeBackup(currentEntries, currentCompanies, backup) {
+  const existingIds = new Set(currentEntries.map((e) => String(e.id)));
+  const added = backup.entries
+    .filter((e) => e && e.date && e.startTime && e.endTime)
+    .filter((e) => !existingIds.has(String(e.id)))
+    .map((e) => ({ ...e, id: String(e.id ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`), company: e.company || 'Yritys 1' }));
+
+  const companies = [...currentCompanies];
+  const addCompany = (name) => {
+    if (name && !companies.includes(name)) companies.push(name);
+  };
+  (backup.companies || []).forEach(addCompany);
+  added.forEach((e) => addCompany(e.company));
+
+  return {
+    entries: [...added, ...currentEntries],
+    companies,
+    addedCount: added.length,
+    skippedCount: backup.entries.length - added.length,
+  };
+}
+
+/** Onko asetuksia tallennettu (vai käytetäänkö oletuksia). */
+export function hasStoredSettings() {
+  try {
+    return localStorage.getItem(SETTINGS_KEY) !== null;
+  } catch (err) {
+    return false;
+  }
+}

@@ -7,7 +7,7 @@ import SettingsModal from './components/SettingsModal';
 import ReportModal from './components/ReportModal';
 import YearReportModal from './components/YearReportModal';
 import UpdateModal from './components/UpdateModal';
-import { APP_VERSION } from './utils/updater';
+import { APP_VERSION, backupLocalData } from './utils/updater';
 import EditEntryModal from './components/EditEntryModal';
 
 import { 
@@ -18,7 +18,11 @@ import {
   getStoredCompanies,
   saveStoredCompanies,
   exportToCSV,
-  exportToJSON
+  exportToJSON,
+  downloadFullBackup,
+  parseBackup,
+  mergeBackup,
+  hasStoredSettings
 } from './utils/storage';
 
 import { 
@@ -130,6 +134,33 @@ export default function App() {
     saveStoredSettings(newSettings);
   };
 
+  // Restore from a backup file: merges, never deletes existing shifts
+  const handleImportBackup = async (fileText) => {
+    const backup = parseBackup(fileText);
+    const result = mergeBackup(entries, companies, backup);
+
+    const ok = window.confirm(
+      `Varmuuskopiossa on ${backup.entries.length} työvuoroa.\n\n` +
+      `Lisätään ${result.addedCount} uutta vuoroa. ` +
+      `${result.skippedCount} on jo sovelluksessa, eikä niitä muuteta.\n\n` +
+      'Nykyisiä tunteja ei poisteta. Jatketaanko?'
+    );
+    if (!ok) return null;
+
+    // Turvakopio nykytilasta ennen tuontia (jos taustapalvelin tukee sitä)
+    try { await backupLocalData(); } catch (err) { /* ei estä tuontia */ }
+
+    updateEntriesState(result.entries);
+    setCompanies(result.companies);
+    saveStoredCompanies(result.companies);
+    let appliedSettings = null;
+    if (backup.settings && !hasStoredSettings()) {
+      appliedSettings = { ...settings, ...backup.settings };
+      handleSaveSettings(appliedSettings);
+    }
+    return { ...result, appliedSettings };
+  };
+
   // Clear all data
   const handleClearAllData = () => {
     updateEntriesState([]);
@@ -239,6 +270,8 @@ export default function App() {
         onDeleteCompany={handleDeleteCompany}
         onSaveSettings={handleSaveSettings}
         onClearAllData={handleClearAllData}
+        onExportBackup={() => downloadFullBackup(APP_VERSION)}
+        onImportBackup={handleImportBackup}
       />
 
       {/* Printable Report Modal */}
