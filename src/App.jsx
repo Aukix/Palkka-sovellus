@@ -5,6 +5,7 @@ import MonthlyStats from './components/MonthlyStats';
 import EntryList from './components/EntryList';
 import SettingsModal from './components/SettingsModal';
 import ReportModal from './components/ReportModal';
+import YearReportModal from './components/YearReportModal';
 import EditEntryModal from './components/EditEntryModal';
 
 import { 
@@ -34,6 +35,7 @@ export default function App() {
   
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isYearReportOpen, setIsYearReportOpen] = useState(false);
 
   // Initial load
   useEffect(() => {
@@ -165,6 +167,7 @@ export default function App() {
         onExportCSV={() => exportToCSV(entries, selectedMonth, selectedCompany === 'ALL' ? '' : selectedCompany)}
         onExportJSON={() => exportToJSON(entries)}
         onOpenReport={() => setIsReportOpen(true)}
+        onOpenYearReport={() => setIsYearReportOpen(true)}
       />
 
       {/* Main Content Layout */}
@@ -244,6 +247,17 @@ export default function App() {
         companies={companies}
         initialCompany={selectedCompany}
         onExportCSV={(comp) => exportToCSV(entries, selectedMonth, comp === 'ALL' ? '' : comp)}
+      />
+
+      {/* Yearly Report Modal */}
+      <YearReportModal 
+        isOpen={isYearReportOpen}
+        onClose={() => setIsYearReportOpen(false)}
+        entries={entries}
+        initialYear={parseInt(selectedMonth.slice(0, 4), 10)}
+        settings={settings}
+        companies={companies}
+        initialCompany={selectedCompany}
       />
 
       {/* Edit Entry Modal */}

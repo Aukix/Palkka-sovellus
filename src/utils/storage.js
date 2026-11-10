@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS = {
   useStartingHour: true, // alkava puolitunti
   defaultStartTime: '08:00',
   defaultEndTime: '16:00',
+  vatRate: 25.5, // ALV % laskutukseen ja kirjanpitoon
 };
 
 export const DEFAULT_COMPANIES = ['Yritys 1'];

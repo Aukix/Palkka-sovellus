@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Save, Settings, Info, Trash2, Building2, Plus } from 'lucide-react';
+import { VAT_RATES, DEFAULT_VAT_RATE, formatPercent } from '../utils/yearReport';
 
 export default function SettingsModal({ 
   isOpen, 
@@ -14,6 +15,7 @@ export default function SettingsModal({
   const [hourlyWage, setHourlyWage] = useState(settings?.hourlyWage ?? 40);
   const [defaultStartTime, setDefaultStartTime] = useState(settings?.defaultStartTime || '08:00');
   const [defaultEndTime, setDefaultEndTime] = useState(settings?.defaultEndTime || '16:00');
+  const [vatRate, setVatRate] = useState(settings?.vatRate ?? DEFAULT_VAT_RATE);
   const [newCompanyName, setNewCompanyName] = useState('');
 
   if (!isOpen) return null;
@@ -24,6 +26,7 @@ export default function SettingsModal({
       hourlyWage: Number(hourlyWage) || 0,
       defaultStartTime,
       defaultEndTime,
+      vatRate: Number(vatRate),
       useStartingHour: true
     });
     onClose();
@@ -152,6 +155,25 @@ export default function SettingsModal({
             />
             <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
               Käytetään kuukauden ja vuorojen arvioidun ansion laskemiseen.
+            </span>
+          </div>
+
+          {/* ALV-kanta */}
+          <div className="form-group">
+            <label className="form-label">ALV-kanta laskutuksessa</label>
+            <select
+              value={vatRate}
+              onChange={(e) => setVatRate(e.target.value)}
+              className="glass-input"
+            >
+              {VAT_RATES.map(rate => (
+                <option key={rate} value={rate} style={{ background: '#0f172a', color: '#f8fafc' }}>
+                  {formatPercent(rate)} %{rate === 0 ? ' (ei arvonlisäverovelvollinen)' : ''}
+                </option>
+              ))}
+            </select>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
+              Tuntipalkka on veroton hinta. Vuosiraportti laskee ALV:n tällä kannalla ja valitsee kirjanpidon luokan (esim. 300 Myynti - Suomi 25,5%).
             </span>
           </div>
 

@@ -8,7 +8,8 @@ import {
   Printer, 
   Settings, 
   FileSpreadsheet,
-  Building2
+  Building2,
+  CalendarRange
 } from 'lucide-react';
 import { FINNISH_MONTHS } from '../utils/hoursCalculator';
 
@@ -21,7 +22,8 @@ export default function Header({
   onOpenSettings, 
   onExportCSV, 
   onExportJSON, 
-  onOpenReport 
+  onOpenReport,
+  onOpenYearReport
 }) {
   const [yearStr, monthStr] = selectedMonth.split('-');
   const currentYear = parseInt(yearStr, 10);
@@ -193,6 +195,16 @@ export default function Header({
           >
             <Printer size={15} />
             <span>Raportti</span>
+          </button>
+
+          <button 
+            onClick={onOpenYearReport}
+            className="btn btn-secondary"
+            style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }}
+            title="Koko vuoden raportti kuukausittain (kirjanpito & laskutus)"
+          >
+            <CalendarRange size={15} color="var(--accent-cyan)" />
+            <span>Vuosiraportti</span>
           </button>
 
           <button 
