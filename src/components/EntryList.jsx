@@ -12,9 +12,13 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { formatDateWithDay, formatDuration, formatCurrency } from '../utils/hoursCalculator';
+import { formatHours } from '../utils/yearReport';
 
 export default function EntryList({ 
   entriesForMonth = [], 
+  allEntries = [],
+  billingFilter = 'ALL', // 'ALL' | 'UNBILLED' | 'BILLED' | 'UNBILLED_ALL'
+  onBillingFilterChange,
   onEditEntry, 
   onDeleteEntry, 
   onToggleBilled,
@@ -25,12 +29,20 @@ export default function EntryList({
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortAsc, setSortAsc] = useState(false); // Default latest first
-  const [billingFilter, setBillingFilter] = useState('ALL'); // 'ALL' | 'UNBILLED' | 'BILLED'
+  const setBillingFilter = (value) => onBillingFilterChange && onBillingFilterChange(value);
 
   const hourlyWage = Number(settings?.hourlyWage) || 0;
 
+  // Kaikkien kuukausien laskuttamattomat vuorot
+  const allUnbilled = allEntries.filter(e => !e.isBilled);
+  const allMonthsMode = billingFilter === 'UNBILLED_ALL';
+  const sourceEntries = allMonthsMode ? allUnbilled : entriesForMonth;
+  const allUnbilledForCompany = selectedCompany && selectedCompany !== 'ALL'
+    ? allUnbilled.filter(e => (e.company || 'Yritys 1') === selectedCompany)
+    : allUnbilled;
+
   // Filter entries by company, billing status, and search query
-  const filtered = entriesForMonth.filter(item => {
+  const filtered = sourceEntries.filter(item => {
     // 1. Company match
     if (selectedCompany && selectedCompany !== 'ALL') {
       if ((item.company || 'Yritys 1') !== selectedCompany) {
@@ -61,6 +73,10 @@ export default function EntryList({
   const unbilledCount = entriesForMonth.filter(e => !e.isBilled).length;
   const billedCount = entriesForMonth.filter(e => e.isBilled).length;
 
+  // Yhteissumma kaikkien kuukausien laskuttamattomille
+  const filteredHours = filtered.reduce((s, e) => s + e.billedHours, 0);
+  const filteredAmount = filtered.reduce((s, e) => s + e.billedHours * (Number(e.wageRate) || hourlyWage), 0);
+
   return (
     <div className="glass-panel no-print" style={{ padding: '0.85rem 1rem' }}>
       
@@ -76,12 +92,23 @@ export default function EntryList({
         <div>
           <h2 style={{ fontSize: '1rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <FileText size={16} color="var(--primary)" />
-            <span>
-              Työvuorot ({filtered.length}
-              {selectedCompany !== 'ALL' && ` • ${selectedCompany}`}
-              {entriesForMonth.length !== filtered.length && ` / ${entriesForMonth.length}`})
-            </span>
+            {allMonthsMode ? (
+              <span style={{ color: 'var(--accent-amber)' }}>
+                Laskuttamatta, kaikki kuukaudet ({filtered.length}{selectedCompany !== 'ALL' && ` • ${selectedCompany}`})
+              </span>
+            ) : (
+              <span>
+                Työvuorot ({filtered.length}
+                {selectedCompany !== 'ALL' && ` • ${selectedCompany}`}
+                {entriesForMonth.length !== filtered.length && ` / ${entriesForMonth.length}`})
+              </span>
+            )}
           </h2>
+          {allMonthsMode && filtered.length > 0 && (
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+              Yhteensä <strong style={{ color: 'var(--accent-amber)' }}>{formatHours(filteredHours)} h ({formatCurrency(filteredAmount)})</strong>. Merkitse vuoro laskutetuksi klikkaamalla sen tilaa.
+            </div>
+          )}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
@@ -102,10 +129,10 @@ export default function EntryList({
               }}
             >
               <option value="ALL" style={{ background: '#0f172a', color: '#f8fafc' }}>
-                Kaikki yritykset ({entriesForMonth.length})
+                Kaikki yritykset ({sourceEntries.length})
               </option>
               {companies.map((c) => {
-                const countForComp = entriesForMonth.filter(e => (e.company || 'Yritys 1') === c).length;
+                const countForComp = sourceEntries.filter(e => (e.company || 'Yritys 1') === c).length;
                 return (
                   <option key={c} value={c} style={{ background: '#0f172a', color: '#f8fafc' }}>
                     🏢 {c} ({countForComp})
@@ -127,7 +154,7 @@ export default function EntryList({
                 fontWeight: '600',
                 cursor: 'pointer',
                 width: 'auto',
-                color: billingFilter === 'UNBILLED' ? 'var(--accent-amber)' : billingFilter === 'BILLED' ? 'var(--accent-emerald)' : 'inherit'
+                color: (billingFilter === 'UNBILLED' || allMonthsMode) ? 'var(--accent-amber)' : billingFilter === 'BILLED' ? 'var(--accent-emerald)' : 'inherit'
               }}
             >
               <option value="ALL" style={{ background: '#0f172a', color: '#f8fafc' }}>
@@ -138,6 +165,9 @@ export default function EntryList({
               </option>
               <option value="BILLED" style={{ background: '#0f172a', color: '#10b981' }}>
                 ✅ Laskutettu ({billedCount})
+              </option>
+              <option value="UNBILLED_ALL" style={{ background: '#0f172a', color: '#f59e0b' }}>
+                ⏳ Laskuttamatta, kaikki kuukaudet ({allUnbilledForCompany.length})
               </option>
             </select>
           </div>
@@ -182,6 +212,8 @@ export default function EntryList({
           <h3 style={{ fontSize: '1.1rem', color: 'var(--text-main)', marginBottom: '0.3rem' }}>
             {selectedCompany !== 'ALL'
               ? `Ei vuoroja yritykselle "${selectedCompany}" valituilla suodattimilla`
+              : allMonthsMode
+              ? 'Ei laskuttamattomia vuoroja millään kuukaudella 🎉'
               : billingFilter !== 'ALL'
               ? `Ei vuoroja tilassa "${billingFilter === 'UNBILLED' ? 'Laskuttamatta' : 'Laskutettu'}"`
               : searchQuery ? 'Ei hakua vastaavia merkintöjä' : 'Ei kirjattuja työvuoroja tässä kuussa'}

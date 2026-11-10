@@ -7,6 +7,7 @@ import SettingsModal from './components/SettingsModal';
 import ReportModal from './components/ReportModal';
 import YearReportModal from './components/YearReportModal';
 import UpdateModal from './components/UpdateModal';
+import UnbilledReminder from './components/UnbilledReminder';
 import { APP_VERSION, backupLocalData } from './utils/updater';
 import EditEntryModal from './components/EditEntryModal';
 
@@ -43,6 +44,7 @@ export default function App() {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isYearReportOpen, setIsYearReportOpen] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [billingFilter, setBillingFilter] = useState('ALL');
 
   // Initial load
   useEffect(() => {
@@ -217,6 +219,19 @@ export default function App() {
           onSelectCompany={setSelectedCompany}
         />
 
+        {/* Muistutus muiden kuukausien laskuttamattomista tunneista */}
+        <UnbilledReminder
+          entries={processedEntries}
+          selectedMonth={selectedMonth}
+          selectedCompany={selectedCompany}
+          defaultWage={settings.hourlyWage}
+          onOpenMonth={(monthKey) => {
+            setSelectedMonth(monthKey);
+            setBillingFilter('UNBILLED');
+          }}
+          onShowAll={() => setBillingFilter('UNBILLED_ALL')}
+        />
+
         {/* 2-Column Desktop Grid: Form Left, List Right */}
         <div className="grid-main">
           <div>
@@ -234,6 +249,9 @@ export default function App() {
           <div>
             <EntryList 
               entriesForMonth={allMonthEntries}
+              allEntries={processedEntries}
+              billingFilter={billingFilter}
+              onBillingFilterChange={setBillingFilter}
               selectedCompany={selectedCompany}
               onSelectCompany={setSelectedCompany}
               companies={companies}
