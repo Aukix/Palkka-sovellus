@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Save, Settings, Info, Trash2, Building2, Plus } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Save, Settings, Info, Trash2, Building2, Plus, Download, Upload, DatabaseBackup } from 'lucide-react';
 import { VAT_RATES, DEFAULT_VAT_RATE, formatPercent } from '../utils/yearReport';
 
 export default function SettingsModal({ 
@@ -10,15 +10,55 @@ export default function SettingsModal({
   onAddCompany,
   onDeleteCompany,
   onSaveSettings, 
-  onClearAllData 
+  onClearAllData,
+  onExportBackup,
+  onImportBackup
 }) {
   const [hourlyWage, setHourlyWage] = useState(settings?.hourlyWage ?? 40);
   const [defaultStartTime, setDefaultStartTime] = useState(settings?.defaultStartTime || '08:00');
   const [defaultEndTime, setDefaultEndTime] = useState(settings?.defaultEndTime || '16:00');
   const [vatRate, setVatRate] = useState(settings?.vatRate ?? DEFAULT_VAT_RATE);
   const [newCompanyName, setNewCompanyName] = useState('');
+  const [importMessage, setImportMessage] = useState(null);
+  const fileInputRef = useRef(null);
+
+  // Lomake näyttää aina tallennetut arvot, kun ikkuna avataan
+  useEffect(() => {
+    if (isOpen) {
+      setHourlyWage(settings?.hourlyWage ?? 40);
+      setDefaultStartTime(settings?.defaultStartTime || '08:00');
+      setDefaultEndTime(settings?.defaultEndTime || '16:00');
+      setVatRate(settings?.vatRate ?? DEFAULT_VAT_RATE);
+      setImportMessage(null);
+    }
+    // Vain avattaessa: tallennus/palautus kesken ikkunan ei saa nollata lomaketta
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const handleImportFile = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file || !onImportBackup) return;
+    try {
+      const text = await file.text();
+      const result = await onImportBackup(text);
+      if (result) {
+        if (result.appliedSettings) {
+          // Näytetään palautetut asetukset, ettei Tallenna kirjoita niiden päälle vanhoja arvoja
+          const s = result.appliedSettings;
+          setHourlyWage(s.hourlyWage ?? 40);
+          setDefaultStartTime(s.defaultStartTime || '08:00');
+          setDefaultEndTime(s.defaultEndTime || '16:00');
+          setVatRate(s.vatRate ?? DEFAULT_VAT_RATE);
+        }
+        setImportMessage({ ok: true, text: `Palautettu: ${result.addedCount} vuoroa lisätty, ${result.skippedCount} oli jo olemassa.` });
+      }
+    } catch (err) {
+      setImportMessage({ ok: false, text: err.message });
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -198,6 +238,31 @@ export default function SettingsModal({
                 className="glass-input" 
               />
             </div>
+          </div>
+
+          {/* Varmuuskopiot */}
+          <div className="form-group" style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--accent-cyan)' }}>
+              <DatabaseBackup size={16} /> Tiedot ja varmuuskopiot
+            </label>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '0.6rem', display: 'block' }}>
+              Tallenna kaikki tunnit, yritykset ja asetukset tiedostoon tai siirrä ne toiselle koneelle tai selaimelle.
+              Palautus lisää vain puuttuvat vuorot, eikä nykyisiä tunteja poisteta.
+            </span>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <button type="button" className="btn btn-secondary" style={{ fontSize: '0.8rem' }} onClick={onExportBackup}>
+                <Download size={15} color="var(--accent-emerald)" /> Lataa varmuuskopio
+              </button>
+              <button type="button" className="btn btn-secondary" style={{ fontSize: '0.8rem' }} onClick={() => fileInputRef.current && fileInputRef.current.click()}>
+                <Upload size={15} color="var(--accent-cyan)" /> Palauta varmuuskopiosta
+              </button>
+              <input ref={fileInputRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={handleImportFile} aria-label="Varmuuskopiotiedosto" />
+            </div>
+            {importMessage && (
+              <div style={{ marginTop: '0.6rem', fontSize: '0.8rem', fontWeight: '600', color: importMessage.ok ? 'var(--accent-emerald)' : 'var(--accent-rose)' }}>
+                {importMessage.text}
+              </div>
+            )}
           </div>
 
           {/* Explanation Box */}

@@ -88,6 +88,18 @@ Vaihtoehtoisesti voi ajaa Käynnistä-valikon **Päivitä Työtunnit** -pikakuva
 
 ---
 
+## 💾 Varmuuskopio ja tietojen siirto
+
+Tunnit, yritykset ja asetukset tallentuvat selaimeen, ja ne ovat sidottuja selaimeen ja osoitteeseen, josta sovellus avattiin. Esimerkiksi `localhost:5173` ja `127.0.0.1:5173` ovat eri paikkoja, samoin oma selain ja sovelluksen Edge-ikkuna.
+
+Siirto paikasta toiseen:
+1. Avaa sovellus siellä, missä tunnit näkyvät, ja valitse **Asetukset (⚙️) → Lataa varmuuskopio**.
+2. Avaa sovellus uudessa paikassa ja valitse **Asetukset → Palauta varmuuskopiosta** → valitse ladattu tiedosto.
+
+Palautus ei poista mitään: nykyiset vuorot säilyvät ja varmuuskopiosta lisätään vain puuttuvat. Palautukseen käyvät myös `varmuuskopiot`-kansion automaattiset varmuuskopiot.
+
+---
+
 ## 📌 Työpöydän pikakuvakkeen luominen
 
 Voit luoda sovellukselle kätevän pikakuvakkeen suoraan Windowsin työpöydälle ajamalla PowerShellissä projektikansiossa:
