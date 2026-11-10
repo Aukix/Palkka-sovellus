@@ -79,6 +79,12 @@ Sovellus aukeaa omaan Edge-ikkunaansa (tai Chromeen, jos Edgeä ei löydy). Jos 
 
 ---
 
+## 🔄 Päivittäminen uusimpaan versioon
+
+Kaksoisklikkaa sovelluskansiossa `paivita.bat`. Se lataa uusimman version GitHubista (main-haara) ja korvaa sovelluksen tiedostot. Tallennetut tunnit ja asetukset säilyvät, koska ne ovat kansiossa `.browser-profile`, jota päivitys ei koske. Käynnistä sovellus päivityksen jälkeen uudelleen.
+
+---
+
 ## 📌 Työpöydän pikakuvakkeen luominen
 
 Voit luoda sovellukselle kätevän pikakuvakkeen suoraan Windowsin työpöydälle ajamalla PowerShellissä projektikansiossa:

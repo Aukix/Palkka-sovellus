@@ -1,4 +1,4 @@
-$currentDir = $PSScriptRoot
+﻿$currentDir = $PSScriptRoot
 if (-not $currentDir) {
     $currentDir = (Get-Location).Path
 }
