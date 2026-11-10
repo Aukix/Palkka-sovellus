@@ -143,7 +143,7 @@ export default function SettingsModal({
 
           {/* Hourly wage */}
           <div className="form-group">
-            <label className="form-label">Tuntipalkka (€ / tunti)</label>
+            <label className="form-label">Oletustuntihinta (€ / tunti, alv 0)</label>
             <input 
               type="number" 
               step="0.05" 
@@ -154,7 +154,7 @@ export default function SettingsModal({
               placeholder="esim. 18.50"
             />
             <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-              Käytetään kuukauden ja vuorojen arvioidun ansion laskemiseen.
+              Laskutettava veroton hinta. Käytetään uusien vuorojen oletuksena ja laskutettavan summan laskemiseen.
             </span>
           </div>
 
@@ -173,7 +173,7 @@ export default function SettingsModal({
               ))}
             </select>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-              Tuntipalkka on veroton hinta. Vuosiraportti laskee ALV:n tällä kannalla ja valitsee kirjanpidon luokan (esim. 300 Myynti - Suomi 25,5%).
+              Tuntihinta on veroton hinta. Vuosiraportti laskee ALV:n tällä kannalla ja valitsee kirjanpidon luokan (esim. 300 Myynti - Suomi 25,5%).
             </span>
           </div>
 

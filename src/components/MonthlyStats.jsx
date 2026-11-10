@@ -191,11 +191,11 @@ export default function MonthlyStats({
           </div>
         </div>
 
-        {/* 3. Estimated Earnings Card */}
+        {/* 3. Estimated Billing Card (veroton) */}
         <div className="glass-card" style={{ padding: '0.55rem 0.85rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-muted)' }}>
             <span style={{ fontSize: '0.725rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Arvioitu Ansio
+              Arvioitu laskutus
             </span>
             <DollarSign size={16} color="var(--accent-emerald)" />
           </div>
@@ -204,7 +204,7 @@ export default function MonthlyStats({
               {formatCurrency(viewGrossPay)}
             </div>
             <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-              Vuorokohtaiset palkat
+              Veroton (alv 0), ennen veroja ja kuluja
             </div>
           </div>
         </div>

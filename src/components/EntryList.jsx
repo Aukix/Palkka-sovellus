@@ -224,7 +224,7 @@ export default function EntryList({
                 <th style={{ padding: '0.45rem 0.5rem', position: 'sticky', top: 0, background: '#0f172a', zIndex: 2 }}>Työaika</th>
                 <th style={{ padding: '0.45rem 0.5rem', position: 'sticky', top: 0, background: '#0f172a', zIndex: 2 }}>Todellinen</th>
                 <th style={{ padding: '0.45rem 0.5rem', position: 'sticky', top: 0, background: '#0f172a', zIndex: 2 }}>Alkava 30m</th>
-                <th style={{ padding: '0.45rem 0.5rem', position: 'sticky', top: 0, background: '#0f172a', zIndex: 2 }}>Palkka (€)</th>
+                <th style={{ padding: '0.45rem 0.5rem', position: 'sticky', top: 0, background: '#0f172a', zIndex: 2 }}>Summa (€)</th>
                 <th style={{ padding: '0.45rem 0.5rem', position: 'sticky', top: 0, background: '#0f172a', zIndex: 2 }}>Laskutus</th>
                 <th style={{ padding: '0.45rem 0.5rem', position: 'sticky', top: 0, background: '#0f172a', zIndex: 2 }}>Kuvaus</th>
                 <th style={{ padding: '0.45rem 0.5rem', position: 'sticky', top: 0, background: '#0f172a', zIndex: 2, textAlign: 'right' }}>Toiminnot</th>

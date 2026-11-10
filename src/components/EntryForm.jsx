@@ -311,7 +311,7 @@ export default function EntryForm({
 
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.725rem' }}>
-              <DollarSign size={12} color="var(--accent-emerald)" /> Palkka (€/h)
+              <DollarSign size={12} color="var(--accent-emerald)" /> Hinta (€/h, alv 0)
             </label>
             <input 
               type="number" 
@@ -495,7 +495,7 @@ export default function EntryForm({
 
           {hourlyWageNum > 0 && (
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.675rem', color: 'var(--text-muted)' }}>Ansio vuorosta</div>
+              <div style={{ fontSize: '0.675rem', color: 'var(--text-muted)' }}>Laskutus vuorosta (alv 0)</div>
               <div style={{ fontSize: '1.05rem', fontWeight: '700', color: 'var(--accent-emerald)' }}>
                 {formatCurrency(estimatedEarn)}
               </div>
