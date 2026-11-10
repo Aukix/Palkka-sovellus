@@ -9,7 +9,8 @@ import {
   Settings, 
   FileSpreadsheet,
   Building2,
-  CalendarRange
+  CalendarRange,
+  RefreshCw
 } from 'lucide-react';
 import { FINNISH_MONTHS } from '../utils/hoursCalculator';
 
@@ -23,7 +24,8 @@ export default function Header({
   onExportCSV, 
   onExportJSON, 
   onOpenReport,
-  onOpenYearReport
+  onOpenYearReport,
+  onOpenUpdates
 }) {
   const [yearStr, monthStr] = selectedMonth.split('-');
   const currentYear = parseInt(yearStr, 10);
@@ -215,6 +217,16 @@ export default function Header({
           >
             <FileSpreadsheet size={15} color="var(--accent-emerald)" />
             <span>Vienti CSV</span>
+          </button>
+
+          <button 
+            onClick={onOpenUpdates}
+            className="btn btn-secondary"
+            style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }}
+            title="Etsi päivityksiä GitHubista ja asenna uusin versio"
+          >
+            <RefreshCw size={15} color="var(--accent-cyan)" />
+            <span>Etsi päivityksiä</span>
           </button>
 
           <button 

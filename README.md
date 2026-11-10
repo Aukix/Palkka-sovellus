@@ -75,7 +75,16 @@ npm run build
 
 ## 🔄 Päivittäminen uusimpaan versioon
 
-Avaa Käynnistä-valikosta **Päivitä Työtunnit** (tai kaksoisklikkaa sovelluskansiossa `paivita.bat`). Se lataa uusimman version GitHubista (main-haara) ja korvaa sovelluksen tiedostot. Tallennetut tunnit ja asetukset säilyvät, koska ne ovat kansiossa `.browser-profile`, jota päivitys ei koske. Käynnistä sovellus päivityksen jälkeen uudelleen.
+Paina sovelluksen yläpalkista **Etsi päivityksiä**. Sovellus vertaa omaa versiotaan GitHubin main-haaran versioon (`package.json`):
+
+- Jos uudempi versio löytyy, **Päivitä nyt** tallentaa ensin varmuuskopion tunneista ja asetuksista kansioon `varmuuskopiot`, lataa ja asentaa uuden version ja käynnistää sovelluksen uudelleen.
+- Muuten sovellus ilmoittaa, ettei päivityksiä ole.
+
+Päivitys ei koske tallennettuihin tietoihin: tunnit, yritykset ja asetukset ovat kansiossa `.browser-profile`, jota päivitys ei kopioi eikä muuta. Varmuuskopioita säilytetään 30 uusinta.
+
+Vaihtoehtoisesti voi ajaa Käynnistä-valikon **Päivitä Työtunnit** -pikakuvakkeen tai sovelluskansion `paivita.bat`-tiedoston.
+
+> **Kehittäjälle:** nosta `package.json`-tiedoston `version` jokaisessa main-haaraan vietävässä muutoksessa ja käännä `dist` (`npm run build`). Muuten Etsi päivityksiä ei huomaa muutosta.
 
 ---
 
