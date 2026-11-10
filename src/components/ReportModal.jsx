@@ -163,12 +163,12 @@ export default function ReportModal({
             </div>
 
             <div>
-              <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', fontWeight: '700' }}>Arvioitu Ansio</span>
+              <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', fontWeight: '700' }}>Laskutettava (alv 0)</span>
               <div style={{ fontSize: '1.4rem', fontWeight: '700', color: '#16a34a' }}>
                 {formatCurrency(totalGrossPay)}
               </div>
               <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                Vuorokohtaiset palkat
+                Tunnit × tuntihinta, veroton
               </span>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function ReportModal({
                 <th style={{ padding: '0.6rem' }}>Alkava 30m</th>
                 <th style={{ padding: '0.6rem' }}>Laskutus</th>
                 <th style={{ padding: '0.6rem' }}>Kuvaus</th>
-                <th style={{ padding: '0.6rem', textAlign: 'right' }}>Ansio</th>
+                <th style={{ padding: '0.6rem', textAlign: 'right' }}>Summa (alv 0)</th>
               </tr>
             </thead>
             <tbody>

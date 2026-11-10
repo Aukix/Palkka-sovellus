@@ -173,7 +173,7 @@ export default function EditEntryModal({
           {/* Tuntipalkka */}
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <DollarSign size={14} color="var(--accent-emerald)" /> Tuntipalkka (€ / tunti)
+              <DollarSign size={14} color="var(--accent-emerald)" /> Tuntihinta (€ / tunti, alv 0)
             </label>
             <input 
               type="number" 
@@ -280,7 +280,7 @@ export default function EditEntryModal({
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Ansio vuorosta</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Laskutus vuorosta (alv 0)</div>
                 <div style={{ fontSize: '1.15rem', fontWeight: '700', color: 'var(--accent-emerald)' }}>
                   {formatCurrency(estimatedEarn)}
                 </div>

@@ -116,8 +116,8 @@ export function exportToCSV(entries, monthKey, selectedCompany = '') {
     'Todelliset tunnit (h)',
     'Alkava puolitunti (h)',
     'Kuvaus',
-    'Tuntipalkka (€)',
-    'Yhteensä (€)',
+    'Tuntihinta (€, alv 0)',
+    'Yhteensä (€, alv 0)',
     'Laskutus'
   ];
 
