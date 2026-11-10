@@ -78,6 +78,18 @@ export default function YearReportModal({
   const vatLabel = `ALV ${formatPercent(vatRate)} %`;
   const hasData = totals.shifts > 0;
 
+  const handleExport = (exportFn) => {
+    if (!hasData) {
+      const filters = [
+        reportCompany !== 'ALL' ? `yritys: ${reportCompany}` : null,
+        billing !== 'ALL' ? BILLING_LABELS[billing].toLowerCase() : null,
+      ].filter(Boolean);
+      alert(`Vuodelle ${year} ei ole kirjattuja työvuoroja${filters.length ? ` (${filters.join(', ')})` : ''}, joten vietävää ei ole.\n\nVaihda vuotta nuolista tai tarkista suodattimet.`);
+      return;
+    }
+    exportFn(report, reportCompany);
+  };
+
   return (
     <div className="modal-overlay report-overlay" onClick={onClose}>
       <div
@@ -138,19 +150,17 @@ export default function YearReportModal({
 
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', width: '100%', justifyContent: 'flex-end' }}>
             <button
-              onClick={() => exportYearReportCSV(report, reportCompany)}
+              onClick={() => handleExport(exportYearReportCSV)}
               className="btn btn-secondary"
               style={{ fontSize: '0.825rem' }}
-              disabled={!hasData}
               title="Kuukausierittely ja asiakaskohtaiset tunnit Exceliin"
             >
               <FileSpreadsheet size={16} color="var(--accent-emerald)" /> Vuosiraportti CSV
             </button>
             <button
-              onClick={() => exportBookkeepingCSV(report, reportCompany)}
+              onClick={() => handleExport(exportBookkeepingCSV)}
               className="btn btn-secondary"
               style={{ fontSize: '0.825rem' }}
-              disabled={!hasData}
               title="Myyntirivit Kirjanpitopohjan sarakkeisiin A–F"
             >
               <BookOpen size={16} color="var(--accent-cyan)" /> Kirjanpito CSV

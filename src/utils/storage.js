@@ -90,14 +90,17 @@ export function saveStoredSettings(settings) {
 }
 
 export function exportToCSV(entries, monthKey, selectedCompany = '') {
-  if (!entries || entries.length === 0) return;
-
   let filtered = monthKey
-    ? entries.filter(e => e.date.startsWith(monthKey))
-    : entries;
+    ? (entries || []).filter(e => e.date && e.date.startsWith(monthKey))
+    : [...(entries || [])];
 
   if (selectedCompany) {
     filtered = filtered.filter(e => e.company === selectedCompany);
+  }
+
+  if (filtered.length === 0) {
+    alert('Valitulle kuukaudelle ei ole kirjattuja työvuoroja, joten vietävää ei ole.');
+    return;
   }
 
   // Sort by date ascending
