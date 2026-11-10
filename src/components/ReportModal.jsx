@@ -202,7 +202,7 @@ export default function ReportModal({
                     <tr key={item.id || idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
                       <td style={{ padding: '0.55rem 0.6rem', fontWeight: '600' }}>{formatDateWithDay(item.date)}</td>
                       <td style={{ padding: '0.55rem 0.6rem', fontWeight: '600', color: '#0369a1' }}>{item.company || 'Yritys 1'}</td>
-                      <td style={{ padding: '0.55rem 0.6rem' }}>{item.startTime} - {item.endTime}</td>
+                      <td style={{ padding: '0.55rem 0.6rem' }}>{item.startTime} - {item.endTime}{Number(item.breakMinutes) > 0 && <span style={{ color: '#b45309', fontSize: '0.75rem' }}> (tauko −{item.breakMinutes} min)</span>}</td>
                       <td style={{ padding: '0.55rem 0.6rem' }}>{formatDuration(item.durationMinutes)}</td>
                       <td style={{ padding: '0.55rem 0.6rem', fontWeight: '700', color: '#0284c7' }}>{item.billedHours} h</td>
                       <td style={{ padding: '0.55rem 0.6rem' }}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Check, RotateCcw, Info, Zap, Building2, PlusCircle, X, Trash2, DollarSign, CheckCircle2, AlertCircle } from 'lucide-react';
-import { calculateShiftHours, formatDuration, formatCurrency, getTodayString } from '../utils/hoursCalculator';
+import { calculateShiftHours, formatDuration, formatCurrency, getTodayString, LUNCH_BREAK_MINUTES } from '../utils/hoursCalculator';
 
 export default function EntryForm({ 
   onSaveEntry, 
@@ -18,6 +18,7 @@ export default function EntryForm({
   const [wageRate, setWageRate] = useState(settings?.hourlyWage ?? 40);
   const [description, setDescription] = useState('');
   const [isBilled, setIsBilled] = useState(false);
+  const [hasLunchBreak, setHasLunchBreak] = useState(false);
 
   // Inline company management state
   const [isAddingCompany, setIsAddingCompany] = useState(false);
@@ -34,6 +35,7 @@ export default function EntryForm({
       setWageRate(editingEntry.wageRate ?? settings?.hourlyWage ?? 40);
       setDescription(editingEntry.description || '');
       setIsBilled(Boolean(editingEntry.isBilled));
+      setHasLunchBreak((Number(editingEntry.breakMinutes) || 0) > 0);
     }
   }, [editingEntry]);
 
@@ -54,7 +56,8 @@ export default function EntryForm({
   }, [companies, company]);
 
   // Live calculation: alkava puolitunti (Math.ceil(minutes / 30) * 0.5)
-  const calc = calculateShiftHours(startTime, endTime, 0);
+  const breakMinutes = hasLunchBreak ? LUNCH_BREAK_MINUTES : 0;
+  const calc = calculateShiftHours(startTime, endTime, breakMinutes);
   const hourlyWageNum = Number(wageRate) || 0;
   const estimatedEarn = calc.billedHours * hourlyWageNum;
 
@@ -98,7 +101,7 @@ export default function EntryForm({
       date,
       startTime,
       endTime,
-      breakMinutes: 0,
+      breakMinutes,
       description: description.trim(),
       wageRate: hourlyWageNum,
       isBilled: Boolean(isBilled)
@@ -108,6 +111,7 @@ export default function EntryForm({
     if (!editingEntry) {
       setDescription('');
       setIsBilled(false);
+      setHasLunchBreak(false);
     }
   };
 
@@ -378,6 +382,31 @@ export default function EntryForm({
           </button>
         </div>
 
+        {/* Ruokatauko */}
+        <div>
+            <label
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                cursor: 'pointer',
+                fontSize: '0.75rem',
+                fontWeight: '600',
+                color: hasLunchBreak ? 'var(--accent-amber)' : 'var(--text-muted)',
+                userSelect: 'none'
+              }}
+              title="Vähentää {LUNCH_BREAK_MINUTES} min ruokatauon työajasta ennen pyöristystä"
+            >
+              <input
+                type="checkbox"
+                checked={hasLunchBreak}
+                onChange={(e) => setHasLunchBreak(e.target.checked)}
+                style={{ accentColor: 'var(--accent-amber)', width: '0.95rem', height: '0.95rem', cursor: 'pointer' }}
+              />
+              🍽️ Ruokatauko (−{LUNCH_BREAK_MINUTES} min)
+            </label>
+        </div>
+
         {/* Description / Note */}
         <div className="form-group">
           <label className="form-label" style={{ fontSize: '0.725rem' }}>Kuvaus / Työtehtävä</label>
@@ -457,7 +486,7 @@ export default function EntryForm({
         }}>
           <div>
             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-              Todellinen: {formatDuration(calc.durationMinutes)} ({calc.realHours} t)
+              Todellinen: {formatDuration(calc.durationMinutes)} ({calc.realHours} t){hasLunchBreak && ` • tauko −${LUNCH_BREAK_MINUTES} min`}
             </div>
             <div style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--accent-cyan)' }}>
               {calc.billedHours} h <span style={{ fontSize: '0.725rem', fontWeight: '500' }}>(30 min pyöristys)</span>

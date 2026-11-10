@@ -119,7 +119,7 @@ export function buildYearReport(entries, year, {
     const month = months[monthIdx];
     if (!month) return;
 
-    const calc = calculateShiftHours(entry.startTime, entry.endTime, 0);
+    const calc = calculateShiftHours(entry.startTime, entry.endTime, entry.breakMinutes);
     const rate = Number(entry.wageRate) || Number(defaultWage) || 0;
     const values = {
       realHours: calc.realHours,

@@ -135,7 +135,7 @@ export default function App() {
 
   // Process all entries with calculated shift hours
   const processedEntries = entries.map(entry => {
-    const calc = calculateShiftHours(entry.startTime, entry.endTime, 0);
+    const calc = calculateShiftHours(entry.startTime, entry.endTime, entry.breakMinutes);
     return {
       ...entry,
       company: entry.company || 'Yritys 1',

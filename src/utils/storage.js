@@ -109,6 +109,7 @@ export function exportToCSV(entries, monthKey, selectedCompany = '') {
     'Yritys / Asiakas',
     'Aloitus',
     'Lopetus',
+    'Ruokatauko (min)',
     'Todelliset tunnit (h)',
     'Alkava puolitunti (h)',
     'Kuvaus',
@@ -118,7 +119,7 @@ export function exportToCSV(entries, monthKey, selectedCompany = '') {
   ];
 
   const rows = filtered.map(item => {
-    const calc = calculateShiftHours(item.startTime, item.endTime, 0);
+    const calc = calculateShiftHours(item.startTime, item.endTime, item.breakMinutes);
     const wage = Number(item.wageRate) || 40;
     const totalWage = (calc.billedHours * wage).toFixed(2);
     const formattedDate = formatDateWithDay(item.date);
@@ -129,6 +130,7 @@ export function exportToCSV(entries, monthKey, selectedCompany = '') {
       `"${(item.company || 'Yritys 1').replace(/"/g, '""')}"`,
       item.startTime,
       item.endTime,
+      Number(item.breakMinutes) || 0,
       calc.realHours.toFixed(2).replace('.', ','),
       calc.billedHours,
       `"${(item.description || '').replace(/"/g, '""')}"`,

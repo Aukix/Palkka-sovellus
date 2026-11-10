@@ -272,6 +272,9 @@ export default function EntryList({
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                         <Clock size={13} color="var(--accent-cyan)" />
                         <span>{entry.startTime} - {entry.endTime}</span>
+                        {Number(entry.breakMinutes) > 0 && (
+                          <span style={{ fontSize: '0.7rem', color: 'var(--accent-amber)' }} title="Ruokatauko vähennetty">🍽️ −{entry.breakMinutes} min</span>
+                        )}
                       </div>
                     </td>
 

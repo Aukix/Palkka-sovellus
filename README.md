@@ -11,6 +11,7 @@ Kevyt, moderni ja helppokäyttöinen työpöytäsovellus työtuntien, palkkasaat
   - Lisää ja poista yrityksiä tai asiakkaita vapaasti.
   - Suodata työvuorot ja ansio valitun yrityksen mukaan.
   - Kuukauden kokonaistunnit ja kokonaisansio kaikista yrityksistä näkyvät aina yhteenvedossa.
+- **🍽️ Ruokatauko**: Täppä vähentää vuorosta 30 min ruokatauon ennen pyöristystä (oletuksena pois). Esim. 8h 20min − 30 min = 7h 50min → 8h.
 - **💶 Vuorokohtainen tuntipalkka**: Aseta tuntipalkka (€/h) jokaiselle vuorolle erikseen tai käytä yleistä oletustuntipalkkaa.
 - **🧾 Laskutustilanteen seuranta**:
   - Merkitse vuoro suoraan listasta yhdellä klikkauksella (`✅ Laskutettu` tai `⏳ Laskuttamatta`).

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, Edit3, Building2, Calendar, Clock, DollarSign, FileText, CheckCircle2, AlertCircle, Zap } from 'lucide-react';
-import { calculateShiftHours, formatDuration, formatCurrency } from '../utils/hoursCalculator';
+import { calculateShiftHours, formatDuration, formatCurrency, LUNCH_BREAK_MINUTES } from '../utils/hoursCalculator';
 
 export default function EditEntryModal({ 
   isOpen, 
@@ -17,6 +17,7 @@ export default function EditEntryModal({
   const [wageRate, setWageRate] = useState(40);
   const [description, setDescription] = useState('');
   const [isBilled, setIsBilled] = useState(false);
+  const [hasLunchBreak, setHasLunchBreak] = useState(false);
 
   useEffect(() => {
     if (entry) {
@@ -27,12 +28,14 @@ export default function EditEntryModal({
       setWageRate(entry.wageRate ?? settings?.hourlyWage ?? 40);
       setDescription(entry.description || '');
       setIsBilled(Boolean(entry.isBilled));
+      setHasLunchBreak((Number(entry.breakMinutes) || 0) > 0);
     }
   }, [entry, companies, settings]);
 
   if (!isOpen || !entry) return null;
 
-  const calc = calculateShiftHours(startTime, endTime, 0);
+  const breakMinutes = hasLunchBreak ? LUNCH_BREAK_MINUTES : 0;
+  const calc = calculateShiftHours(startTime, endTime, breakMinutes);
   const hourlyWageNum = Number(wageRate) || 0;
   const estimatedEarn = calc.billedHours * hourlyWageNum;
 
@@ -46,7 +49,7 @@ export default function EditEntryModal({
       date,
       startTime,
       endTime,
-      breakMinutes: 0,
+      breakMinutes,
       wageRate: hourlyWageNum,
       description: description.trim(),
       isBilled: Boolean(isBilled)
@@ -140,6 +143,31 @@ export default function EditEntryModal({
                 required 
               />
             </div>
+          </div>
+
+          {/* Ruokatauko */}
+          <div>
+            <label
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                color: hasLunchBreak ? 'var(--accent-amber)' : 'var(--text-muted)',
+                userSelect: 'none'
+              }}
+              title="Vähentää {LUNCH_BREAK_MINUTES} min ruokatauon työajasta ennen pyöristystä"
+            >
+              <input
+                type="checkbox"
+                checked={hasLunchBreak}
+                onChange={(e) => setHasLunchBreak(e.target.checked)}
+                style={{ accentColor: 'var(--accent-amber)', width: '0.95rem', height: '0.95rem', cursor: 'pointer' }}
+              />
+              🍽️ Ruokatauko (−{LUNCH_BREAK_MINUTES} min)
+            </label>
           </div>
 
           {/* Tuntipalkka */}
@@ -245,7 +273,7 @@ export default function EditEntryModal({
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                  Todellinen aika: <strong style={{ color: 'var(--text-main)' }}>{formatDuration(calc.durationMinutes)}</strong> ({calc.realHours} t)
+                  Todellinen aika: <strong style={{ color: 'var(--text-main)' }}>{formatDuration(calc.durationMinutes)}</strong> ({calc.realHours} t){hasLunchBreak && ` • tauko −${LUNCH_BREAK_MINUTES} min`}
                 </div>
                 <div style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--accent-cyan)' }}>
                   {calc.billedHours} h <span style={{ fontSize: '0.85rem', fontWeight: '500' }}>(30 min pyöristys)</span>

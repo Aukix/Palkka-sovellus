@@ -10,6 +10,9 @@ export const FINNISH_MONTHS = [
 
 export const FINNISH_WEEKDAYS = ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'];
 
+/** Ruokatauon pituus minuutteina (vähennetään työajasta ennen pyöristystä). */
+export const LUNCH_BREAK_MINUTES = 30;
+
 /**
  * Calculates work shift durations.
  * @param {string} startTime - HH:mm
