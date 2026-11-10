@@ -17,6 +17,7 @@ Kevyt, moderni ja helppokäyttöinen työpöytäsovellus työtuntien, palkkasaat
   - Merkitse vuoro suoraan listasta yhdellä klikkauksella (`✅ Laskutettu` tai `⏳ Laskuttamatta`).
   - Suodata työvuorot laskutustilan mukaan.
   - Yhteenvedossa näet heti paljonko tunteja ja rahaa odottaa laskutusta ja kuukauden laskutusasteen (%).
+- **⚠️ Muistutus laskuttamattomista tunneista**: Yhteenvedon alla näkyy aina, jos muilta kuukausilta on laskuttamattomia tunteja (kuukausittain, tunnit ja summa). Kuukautta klikkaamalla pääsee sen laskuttamattomiin vuoroihin, ja *Näytä kaikki* listaa kaikkien kuukausien laskuttamattomat vuorot kerralla.
 - **🖊️ Työvuorojen muokkaus**: Muokkaa olemassa olevia työvuoroja kätevästi erillisessä ponnahdusikkunassa reaaliaikaisella live-laskennalla.
 - **📊 Tulostettava kuukausiraportti**: Valmis A4-tuntikortti työnantajalle tai kirjanpitoon allekirjoituskentillä ja PDF-tulostuksella.
 - **📅 Vuosiraportti kirjanpitoon ja laskutukseen**:
