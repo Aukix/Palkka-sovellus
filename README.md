@@ -39,33 +39,27 @@ Kevyt, moderni ja helppokäyttöinen työpöytäsovellus työtuntien, palkkasaat
 
 ---
 
-## 🚀 Käyttöönotto ja Asennus
+## 🚀 Asennus (helpoin tapa)
 
-### 1. Lataa tai kloonaa projekti
-```bash
-git clone https://github.com/<kayttajatunnus>/palkka-sovellus.git
-cd palkka-sovellus
-```
+1. Lataa uusin versio: [main.zip](https://github.com/Aukix/Palkka-sovellus/archive/refs/heads/main.zip) ja pura se mihin tahansa kansioon.
+2. Kaksoisklikkaa kansiossa **`Asenna.bat`**. Se
+   - asentaa Node.js:n, jos sitä ei vielä ole (Windows kysyy luvan),
+   - kopioi sovelluksen pysyvään kansioon `%LOCALAPPDATA%\Tyotunnit`,
+   - luo **Työtunnit**-pikakuvakkeen Käynnistä-valikkoon ja työpöydälle sekä **Päivitä Työtunnit** -pikakuvakkeen Käynnistä-valikkoon.
+3. Avaa sovellus pikakuvakkeesta. Ladatun zip-kansion voi asennuksen jälkeen poistaa.
 
-> Valmiiksi käännetty versio (`dist`-kansio) on mukana, joten pelkkään käyttöön riittää Node.js: siirry suoraan kohtaan 4. Vaiheet 2–3 tarvitaan vain, jos muokkaat koodia.
+Aloitusnäyttöön kiinnitys: Käynnistä-valikko → Kaikki sovellukset → Työtunnit → hiiren oikea → *Kiinnitä aloitusnäyttöön*.
 
-### 2. Asenna riippuvuudet
+Sovellus aukeaa omaan Edge-ikkunaansa (tai Chromeen, jos Edgeä ei löydy). Jos kumpaakaan ei löydy, sovellus aukeaa oletusselaimeen osoitteessa `http://127.0.0.1:5173/`.
+
+### Käsin käynnistys ja kehitys
+
+Valmiiksi käännetty versio (`dist`-kansio) on mukana, joten käyttöön riittää Node.js 18 tai uudempi ja `start-app.bat`. Jos muokkaat koodia:
+
 ```bash
 npm install
-```
-
-### 3. Käännä tuotantoversio
-```bash
 npm run build
 ```
-
-### 4. Käynnistä sovellus
-Voit käynnistää sovelluksen millä tahansa seuraavista tavoista:
-- Kaksoisklikkaamalla `start-app.bat` -tiedostoa.
-- Tai komentoriviltä: `npm start`
-- Tai äänettömästi ilman konsoli-ikkunaa kaksoisklikkaamalla `start-app.vbs`.
-
-Sovellus aukeaa omaan Edge-ikkunaansa (tai Chromeen, jos Edgeä ei löydy). Jos kumpaakaan ei löydy, sovellus aukeaa oletusselaimeen osoitteessa `http://127.0.0.1:5173/`. Pidä silloin komentoikkuna auki käytön ajan.
 
 ---
 
@@ -81,7 +75,7 @@ Sovellus aukeaa omaan Edge-ikkunaansa (tai Chromeen, jos Edgeä ei löydy). Jos 
 
 ## 🔄 Päivittäminen uusimpaan versioon
 
-Kaksoisklikkaa sovelluskansiossa `paivita.bat`. Se lataa uusimman version GitHubista (main-haara) ja korvaa sovelluksen tiedostot. Tallennetut tunnit ja asetukset säilyvät, koska ne ovat kansiossa `.browser-profile`, jota päivitys ei koske. Käynnistä sovellus päivityksen jälkeen uudelleen.
+Avaa Käynnistä-valikosta **Päivitä Työtunnit** (tai kaksoisklikkaa sovelluskansiossa `paivita.bat`). Se lataa uusimman version GitHubista (main-haara) ja korvaa sovelluksen tiedostot. Tallennetut tunnit ja asetukset säilyvät, koska ne ovat kansiossa `.browser-profile`, jota päivitys ei koske. Käynnistä sovellus päivityksen jälkeen uudelleen.
 
 ---
 

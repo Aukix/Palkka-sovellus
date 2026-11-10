@@ -2,8 +2,17 @@
 # Tallennetut tunnit eivät muutu: ne ovat kansiossa .browser-profile, jota päivitys ei koske.
 
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 $appDir = $PSScriptRoot
 $url = 'https://github.com/Aukix/Palkka-sovellus/archive/refs/heads/main.zip'
+function Copy-Folder($from, $to, [string[]]$excludeDirs = @()) {
+    # robocopy yhdistää kansiot luotettavasti; paluukoodit 0-7 = onnistui
+    $rcArgs = @($from, $to, '/E', '/R:2', '/W:1', '/NFL', '/NDL', '/NJH', '/NJS', '/NP')
+    if ($excludeDirs.Count -gt 0) { $rcArgs += '/XD'; $rcArgs += $excludeDirs }
+    & robocopy @rcArgs | Out-Null
+    if ($LASTEXITCODE -ge 8) { throw "Tiedostojen kopiointi epäonnistui (robocopy $LASTEXITCODE)." }
+}
+
 $tmp = Join-Path $env:TEMP ('tyotunnit-paivitys-' + [guid]::NewGuid().ToString())
 
 try {
@@ -25,7 +34,10 @@ try {
     # Vanha käännös poistetaan, ettei turhia tiedostoja kerry
     $dist = Join-Path $appDir 'dist'
     if (Test-Path $dist) { Remove-Item -Path $dist -Recurse -Force }
-    Copy-Item -Path (Join-Path $src.FullName '*') -Destination $appDir -Recurse -Force
+    Copy-Folder $src.FullName $appDir
+    Get-ChildItem -Path $appDir -Recurse -File -Force |
+        Where-Object { $_.FullName -notlike '*\.browser-profile\*' } |
+        Unblock-File -ErrorAction SilentlyContinue
 
     Write-Host ''
     Write-Host 'Valmis! Sovellus on päivitetty uusimpaan versioon.' -ForegroundColor Green
