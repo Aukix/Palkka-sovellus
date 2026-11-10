@@ -6,6 +6,8 @@ import EntryList from './components/EntryList';
 import SettingsModal from './components/SettingsModal';
 import ReportModal from './components/ReportModal';
 import YearReportModal from './components/YearReportModal';
+import UpdateModal from './components/UpdateModal';
+import { APP_VERSION } from './utils/updater';
 import EditEntryModal from './components/EditEntryModal';
 
 import { 
@@ -36,6 +38,7 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isYearReportOpen, setIsYearReportOpen] = useState(false);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
 
   // Initial load
   useEffect(() => {
@@ -168,6 +171,7 @@ export default function App() {
         onExportJSON={() => exportToJSON(entries)}
         onOpenReport={() => setIsReportOpen(true)}
         onOpenYearReport={() => setIsYearReportOpen(true)}
+        onOpenUpdates={() => setIsUpdateOpen(true)}
       />
 
       {/* Main Content Layout */}
@@ -221,7 +225,7 @@ export default function App() {
         fontSize: '0.725rem'
       }}>
         <p>
-          Kevyt Työtuntien Seuranta • Alkavan puolitunnin pyöristys (30 min) • Yrityskohtainen erittely & kokonaistunnit
+          Kevyt Työtuntien Seuranta • Alkavan puolitunnin pyöristys (30 min) • Yrityskohtainen erittely & kokonaistunnit • Versio {APP_VERSION}
         </p>
       </footer>
 
@@ -258,6 +262,12 @@ export default function App() {
         settings={settings}
         companies={companies}
         initialCompany={selectedCompany}
+      />
+
+      {/* Updates Modal */}
+      <UpdateModal 
+        isOpen={isUpdateOpen}
+        onClose={() => setIsUpdateOpen(false)}
       />
 
       {/* Edit Entry Modal */}
